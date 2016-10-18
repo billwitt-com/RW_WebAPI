@@ -28,31 +28,75 @@ namespace RWICPreceiverApp.Controllers
 
         [ResponseType(typeof(bool))]
         [Route("GetInboundICPFinalExists")]
-        public bool GetInboundICPFinalExists(int id)
+        [HttpGet]
+        public IHttpActionResult GetInboundICPFinalExists(int id)
         {
+            bool validated = false;
+            HttpRequestMessage request = ControllerContext.Request; // this seems to be same as request 
+
+            ValidateCredentials VC = new ValidateCredentials();
+            validated = VC.checkCreds(request);
+            if (!validated)
+                return Unauthorized();
+
             RiverWatchEntities RWDE = new RiverWatchEntities();
-            return RWDE.InboundICPFinals.Count(e => e.ID == id) > 0;
+            return Ok(RWDE.InboundICPFinals.Count(e => e.ID == id) > 0);
         }
 
         [ResponseType(typeof(bool))]
-        [Route("GetBarcodeExists")]
-      //  [HttpGet]
-        public bool GetBarcodeExists(string Bcode)
+        [Route("GetICPBarCodeExists")]
+        [HttpGet]
+        public IHttpActionResult GetICPBarCodeExists(string Bcode)
         {
+            bool validated = false;
+            HttpRequestMessage request = ControllerContext.Request; // this seems to be same as request 
+
+            ValidateCredentials VC = new ValidateCredentials();
+            validated = VC.checkCreds(request);
+            if (!validated)
+                return Unauthorized();
+
+            RiverWatchEntities RWDE = new RiverWatchEntities();           
+            return Ok((RWDE.InboundICPFinals.Count(e => e.CODE == Bcode) > 0));
+        }
+
+        [ResponseType(typeof(bool))]
+        [Route("GetNewExpBarCodeExists")]
+        [HttpGet]
+        public IHttpActionResult GetNewExpBarCodeExists(string Bcode)
+        {
+            bool validated = false;
+            HttpRequestMessage request = ControllerContext.Request; // this seems to be same as request
+
+            ValidateCredentials VC = new ValidateCredentials();
+            validated = VC.checkCreds(request);
+            if (!validated)
+                return Unauthorized();
+
             RiverWatchEntities RWDE = new RiverWatchEntities();
-            return (RWDE.InboundICPFinals.Count(e => e.CODE == Bcode) > 0);
+            return Ok(RWDE.NEWexpWaters.Count(e => e.MetalsBarCode == Bcode) > 0);
         }
 
         [ResponseType(typeof(bool))]
         [Route("GetSampleExists")]
-        public bool GetSampleExists(string Samplenumber)
+        [HttpGet]
+        public IHttpActionResult GetSampleExists(string samplenumber)
         {
+            bool validated = false;
+            HttpRequestMessage request = ControllerContext.Request; // this seems to be same as request
+
+            ValidateCredentials VC = new ValidateCredentials();
+            validated = VC.checkCreds(request);
+            if (!validated)
+                return Unauthorized();
+
             RiverWatchEntities RWDE = new RiverWatchEntities();
-            return RWDE.Samples.Count(e => e.SampleNumber == Samplenumber) > 0;
+            return Ok(RWDE.Samples.Count(e => e.SampleNumber == samplenumber) > 0);
         }
 
         // GET: api/InboundICPFinals1/5
         [ResponseType(typeof(InboundICPFinal))]
+        [HttpGet]
         public IHttpActionResult GetInboundICPFinal(int id)
         {
             bool validated = false;
@@ -76,10 +120,16 @@ namespace RWICPreceiverApp.Controllers
         }
 
 
-        // POST: api/InboundICPFinals
         [ResponseType(typeof(InboundICPFinal))]
-        public async Task<IHttpActionResult>  PostInboundICPFinal(InboundICPFinal inboundICPFinal)    // async
+        [Route("PostInboundICPFinal")]
+        [HttpPost]
+        public async Task<IHttpActionResult> PostInboundICPFinal(InboundICPFinal inboundICPFinal)    
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             RiverWatchEntities RWDE = new RiverWatchEntities();
             InboundICPOrigional IO = new InboundICPOrigional();
             int res = 0;
@@ -87,10 +137,7 @@ namespace RWICPreceiverApp.Controllers
             bool validated = false;
             string conStr = RWDE.Database.Connection.ConnectionString; 
 
-           if (!ModelState.IsValid)
-           {
-               return BadRequest(ModelState);
-           }
+           
             HttpRequestMessage request = ControllerContext.Request; // this seems to be same as request 
           
             ValidateCredentials VC = new ValidateCredentials();
@@ -153,10 +200,26 @@ namespace RWICPreceiverApp.Controllers
            catch (Exception ex)
            {
                string msg = string.Format("Data base write failed with error: {0}", ex.Message);
-               return BadRequest(msg);
+               return InternalServerError(ex);
            }
 
-            return CreatedAtRoute("DefaultApi", new { id = inboundICPFinal.ID }, inboundICPFinal);
+            //return updated inboundICPFinal object with Id
+            return Ok(inboundICPFinal);
+
+            //not sure what this was being used for so I commented it out? returning the URI of the created resource?
+            //return CreatedAtRoute("DefaultApi", new { id = inboundICPFinal.ID }, inboundICPFinal);
+        }
+
+        [Route("PostTest")]
+        [HttpPost]
+        public async Task<IHttpActionResult> PostTest(Test test)    // async
+        {
+            if (!ModelState.IsValid)
+            {
+                BadRequest("Model State is not Valid.");
+            }
+            test.Id = "55";
+            return Ok(test);
         }
     }
 }

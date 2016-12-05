@@ -306,6 +306,7 @@
     <None Include="Properties\PublishProfiles\Alex_Azure.pubxml" />
     <None Include="Properties\PublishProfiles\Alex_localhost.pubxml" />
     <None Include="Properties\PublishProfiles\ColoradoRiverWatchApi - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\coloradoriverwatchwebapi - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\webAPI.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

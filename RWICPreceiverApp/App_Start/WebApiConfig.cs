@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Web.Http;
 using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Serialization;
+using System.Web.Routing;
 
 namespace RWICPreceiverApp
 {
@@ -26,6 +27,20 @@ namespace RWICPreceiverApp
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
+            );
+
+            config.Routes.MapHttpRoute(
+                "PostBlobUpload",
+                "blobs/upload/{stationNum}/{user}",
+                new { controller = "Blobs", action = "PostBlobUpload" },
+                new { httpMethod = new HttpMethodConstraint("POST") }
+            );
+
+            config.Routes.MapHttpRoute(
+                "GetBlobDownload",
+                "blobs/{blobId}/download",
+                new { controller = "Blobs", action = "GetBlobDownload" },
+                new { httpMethod = new HttpMethodConstraint("GET") }
             );
         }
     }

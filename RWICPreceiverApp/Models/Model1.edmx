@@ -15,7 +15,7 @@
           <Property Name="StackTrace" Type="nvarchar(max)" />
           <Property Name="Severity" Type="int" />
           <Property Name="LoggedInUser" Type="nvarchar" MaxLength="200" Nullable="false" />
-          <Property Name="Date" Type="date" Nullable="false" />
+          <Property Name="Date" Type="datetime" />
           <Property Name="Comment" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="InboundICPFinal">
@@ -132,70 +132,71 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="tblSampleID" Type="int" />
           <Property Name="SampleNumber" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="Event" Type="varchar" MaxLength="12" />
+          <Property Name="Event" Type="varchar" MaxLength="12" Nullable="false" />
+          <Property Name="TypeCode" Type="varchar" MaxLength="5" />
           <Property Name="WaterShed" Type="varchar" MaxLength="3" />
-          <Property Name="River_CD" Type="decimal" Precision="14" Scale="4" />
           <Property Name="RiverName" Type="varchar" MaxLength="17" />
           <Property Name="KitNumber" Type="int" />
           <Property Name="OrganizationName" Type="varchar" MaxLength="50" />
+          <Property Name="OrganizationID" Type="int" />
           <Property Name="StationID" Type="int" />
-          <Property Name="TypeCode" Type="varchar" MaxLength="5" />
+          <Property Name="StationNumber" Type="int" />
           <Property Name="StationName" Type="varchar" MaxLength="50" />
           <Property Name="MetalsBarCode" Type="varchar" MaxLength="20" />
           <Property Name="NutrientBarCode" Type="varchar" MaxLength="20" />
           <Property Name="FieldBarCode" Type="varchar" MaxLength="20" />
           <Property Name="BugsBarCode" Type="varchar" MaxLength="20" />
-          <Property Name="SampleDate" Type="datetime" Nullable="false" />
-          <Property Name="USGS_Flow" Type="decimal" Precision="10" Scale="4" />
-          <Property Name="PH" Type="decimal" Precision="10" Scale="4" />
-          <Property Name="TempC" Type="decimal" Precision="10" Scale="4" />
-          <Property Name="PHEN_ALK" Type="decimal" Precision="10" Scale="4" />
-          <Property Name="TOTAL_ALK" Type="decimal" Precision="10" Scale="4" />
-          <Property Name="TOTAL_HARD" Type="decimal" Precision="10" Scale="4" />
-          <Property Name="DO_MGL" Type="decimal" Precision="10" Scale="4" />
-          <Property Name="DOSAT" Type="decimal" Precision="10" Scale="4" />
-          <Property Name="AL_D" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="AL_T" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="AS_D" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="AS_T" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="CA_D" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="CA_T" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="CD_D" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="CD_T" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="CU_D" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="CU_T" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="FE_D" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="FE_T" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="MG_D" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="MG_T" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="MN_D" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="MN_T" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="PB_D" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="PB_T" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="SE_D" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="SE_T" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="ZN_D" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="ZN_T" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="NA_D" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="NA_T" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="K_D" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="K_T" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="Rep" Type="int" />
-          <Property Name="Ammonia" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="Chloride" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="ChlorophyllA" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="DOC" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="NN" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="OP" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="Sulfate" Type="decimal" Precision="10" Scale="4" />
-          <Property Name="totN" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="totP" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="TKN" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="orgN" Type="decimal" Precision="14" Scale="4" />
-          <Property Name="TSS" Type="decimal" Precision="14" Scale="4" />
+          <Property Name="SampleDate" Type="datetime" />
+          <Property Name="USGS_Flow" Type="float" />
+          <Property Name="PH" Type="float" />
+          <Property Name="TempC" Type="float" />
+          <Property Name="PHEN_ALK" Type="float" />
+          <Property Name="TOTAL_ALK" Type="float" />
+          <Property Name="TOTAL_HARD" Type="float" />
+          <Property Name="DO_MGL" Type="float" />
+          <Property Name="DOSAT" Type="int" />
+          <Property Name="AL_D" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="AL_T" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="AS_D" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="AS_T" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="CA_D" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="CA_T" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="CD_D" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="CD_T" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="CU_D" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="CU_T" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="FE_D" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="FE_T" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="MG_D" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="MG_T" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="MN_D" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="MN_T" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="PB_D" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="PB_T" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="SE_D" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="SE_T" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="ZN_D" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="ZN_T" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="NA_D" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="NA_T" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="K_D" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="K_T" Type="decimal" Precision="28" Scale="10" />
+          <Property Name="Ammonia" Type="float" />
+          <Property Name="Chloride" Type="float" />
+          <Property Name="ChlorophyllA" Type="float" />
+          <Property Name="DOC" Type="float" />
+          <Property Name="NN" Type="float" />
+          <Property Name="OP" Type="float" />
+          <Property Name="Sulfate" Type="float" />
+          <Property Name="totN" Type="float" />
+          <Property Name="totP" Type="float" />
+          <Property Name="TKN" Type="float" />
+          <Property Name="orgN" Type="float" />
+          <Property Name="TSS" Type="float" />
+          <Property Name="Batch" Type="int" />
+          <Property Name="SampleComments" Type="nvarchar(max)" />
           <Property Name="FieldComment" Type="nvarchar(max)" />
           <Property Name="NutrientComment" Type="nvarchar(max)" />
           <Property Name="MetalsComment" Type="nvarchar(max)" />
@@ -207,9 +208,7 @@
           <Property Name="BadDuplicate" Type="bit" />
           <Property Name="BadSample" Type="bit" />
           <Property Name="Valid" Type="bit" Nullable="false" />
-          <Property Name="OrganizationID" Type="int" />
-          <Property Name="SampleComments" Type="nvarchar(max)" />
-          <Property Name="StationNumber" Type="int" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="Samples">
           <Key>
@@ -248,6 +247,80 @@
           <Property Name="DuplicatedCS" Type="bit" />
           <Property Name="Valid" Type="bit" />
         </EntityType>
+        <EntityType Name="Station">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StationNumber" Type="int" />
+          <Property Name="River" Type="varchar" MaxLength="17" />
+          <Property Name="AquaticModelIndex" Type="varchar" MaxLength="25" />
+          <Property Name="WaterCode" Type="varchar" MaxLength="5" />
+          <Property Name="WaterBodyID" Type="varchar" MaxLength="25" />
+          <Property Name="StationType" Type="varchar" MaxLength="25" />
+          <Property Name="QUADI" Type="varchar" MaxLength="25" />
+          <Property Name="Township" Type="varchar" MaxLength="25" />
+          <Property Name="Range" Type="varchar" MaxLength="25" />
+          <Property Name="Section" Type="int" />
+          <Property Name="QuaterSection" Type="varchar" MaxLength="25" />
+          <Property Name="Grid" Type="varchar" MaxLength="25" />
+          <Property Name="StationQUAD" Type="varchar" MaxLength="25" />
+          <Property Name="RWWaterShed" Type="varchar" MaxLength="2" />
+          <Property Name="WQCCWaterShed" Type="varchar" MaxLength="25" />
+          <Property Name="HydroUnit" Type="varchar" MaxLength="25" />
+          <Property Name="EcoRegion" Type="varchar" MaxLength="50" />
+          <Property Name="StationName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="StationStatus" Type="varchar" MaxLength="10" />
+          <Property Name="Elevation" Type="float" />
+          <Property Name="WaterShedRegion" Type="varchar" MaxLength="25" />
+          <Property Name="Longtitude" Type="float" />
+          <Property Name="Latitude" Type="float" />
+          <Property Name="County" Type="varchar" MaxLength="25" />
+          <Property Name="State" Type="varchar" MaxLength="2" />
+          <Property Name="NearCity" Type="varchar" MaxLength="50" />
+          <Property Name="Move" Type="varchar" MaxLength="25" />
+          <Property Name="Description" Type="varchar" MaxLength="1024" />
+          <Property Name="UTMX" Type="float" />
+          <Property Name="UTMY" Type="float" />
+          <Property Name="Region" Type="varchar" MaxLength="25" />
+          <Property Name="Comments" Type="varchar" MaxLength="1000" />
+          <Property Name="USGS" Type="bit" />
+          <Property Name="StateEngineering" Type="bit" />
+          <Property Name="DateCreated" Type="datetime" />
+          <Property Name="UserCreated" Type="varchar" MaxLength="25" />
+          <Property Name="DateLastModified" Type="datetime" />
+          <Property Name="UserLastModified" Type="varchar" MaxLength="25" />
+          <Property Name="StoretUploaded" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="StationFile">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StationID" Type="int" Nullable="false" />
+          <Property Name="FileName" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="FileUrl" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="FileSizeInBytes" Type="bigint" Nullable="false" />
+          <Property Name="FileSizeInKb" Type="bigint" Nullable="false" />
+          <Property Name="FileExt" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="200" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="Primary" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_StationFile_StationFile">
+          <End Role="Station" Type="Self.Station" Multiplicity="1" />
+          <End Role="StationFile" Type="Self.StationFile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Station">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StationFile">
+              <PropertyRef Name="StationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="RiverWatchModelStoreContainer">
           <EntitySet Name="ErrorLog" EntityType="Self.ErrorLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InboundICPFinal" EntityType="Self.InboundICPFinal" Schema="dbo" store:Type="Tables" />
@@ -255,6 +328,12 @@
           <EntitySet Name="MetalBarCode" EntityType="Self.MetalBarCode" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NEWexpWater" EntityType="Self.NEWexpWater" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Samples" EntityType="Self.Samples" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Station" EntityType="Self.Station" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StationFile" EntityType="Self.StationFile" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_StationFile_StationFile" Association="Self.FK_StationFile_StationFile">
+            <End Role="Station" EntitySet="Station" />
+            <End Role="StationFile" EntitySet="StationFile" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -270,7 +349,7 @@
           <Property Name="StackTrace" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Severity" Type="Int32" />
           <Property Name="LoggedInUser" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
           <Property Name="Comment" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="InboundICPFinal">
@@ -366,8 +445,14 @@
           <EntitySet Name="InboundICPFinals" EntityType="Self.InboundICPFinal" />
           <EntitySet Name="InboundICPOrigionals" EntityType="Self.InboundICPOrigional" />
           <EntitySet Name="MetalBarCodes" EntityType="RiverWatchModel.MetalBarCode" />
-          <EntitySet Name="NEWexpWaters" EntityType="RiverWatchModel.NEWexpWater" />
           <EntitySet Name="Samples" EntityType="RiverWatchModel.Sample" />
+          <EntitySet Name="Stations" EntityType="RiverWatchModel.Station" />
+          <EntitySet Name="StationFiles" EntityType="RiverWatchModel.StationFile" />
+          <AssociationSet Name="FK_StationFile_StationFile" Association="RiverWatchModel.FK_StationFile_StationFile">
+            <End Role="Station" EntitySet="Stations" />
+            <End Role="StationFile" EntitySet="StationFiles" />
+          </AssociationSet>
+          <EntitySet Name="NEWexpWaters" EntityType="RiverWatchModel.NEWexpWater" />
         </EntityContainer>
         <EntityType Name="MetalBarCode">
           <Key>
@@ -390,89 +475,6 @@
           <Property Name="DateLastModified" Type="DateTime" Precision="3" />
           <Property Name="UserLastModified" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
           <Property Name="SampleID" Type="Int32" />
-        </EntityType>
-        <EntityType Name="NEWexpWater">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="tblSampleID" Type="Int32" />
-          <Property Name="SampleNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Event" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
-          <Property Name="WaterShed" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
-          <Property Name="River_CD" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="RiverName" Type="String" MaxLength="17" FixedLength="false" Unicode="false" />
-          <Property Name="KitNumber" Type="Int32" />
-          <Property Name="OrganizationName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="StationID" Type="Int32" />
-          <Property Name="TypeCode" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="StationName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="MetalsBarCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="NutrientBarCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="FieldBarCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="BugsBarCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="SampleDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="USGS_Flow" Type="Decimal" Precision="10" Scale="4" />
-          <Property Name="PH" Type="Decimal" Precision="10" Scale="4" />
-          <Property Name="TempC" Type="Decimal" Precision="10" Scale="4" />
-          <Property Name="PHEN_ALK" Type="Decimal" Precision="10" Scale="4" />
-          <Property Name="TOTAL_ALK" Type="Decimal" Precision="10" Scale="4" />
-          <Property Name="TOTAL_HARD" Type="Decimal" Precision="10" Scale="4" />
-          <Property Name="DO_MGL" Type="Decimal" Precision="10" Scale="4" />
-          <Property Name="DOSAT" Type="Decimal" Precision="10" Scale="4" />
-          <Property Name="AL_D" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="AL_T" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="AS_D" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="AS_T" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="CA_D" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="CA_T" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="CD_D" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="CD_T" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="CU_D" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="CU_T" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="FE_D" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="FE_T" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="MG_D" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="MG_T" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="MN_D" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="MN_T" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="PB_D" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="PB_T" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="SE_D" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="SE_T" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="ZN_D" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="ZN_T" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="NA_D" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="NA_T" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="K_D" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="K_T" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="Rep" Type="Int32" />
-          <Property Name="Ammonia" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="Chloride" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="ChlorophyllA" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="DOC" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="NN" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="OP" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="Sulfate" Type="Decimal" Precision="10" Scale="4" />
-          <Property Name="totN" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="totP" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="TKN" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="orgN" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="TSS" Type="Decimal" Precision="14" Scale="4" />
-          <Property Name="FieldComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="NutrientComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="MetalsComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="BugsComments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="BenthicsComments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CreateDate" Type="DateTime" Precision="3" />
-          <Property Name="BadBlank" Type="Boolean" />
-          <Property Name="BadDuplicate" Type="Boolean" />
-          <Property Name="BadSample" Type="Boolean" />
-          <Property Name="Valid" Type="Boolean" Nullable="false" />
-          <Property Name="OrganizationID" Type="Int32" />
-          <Property Name="SampleComments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="StationNumber" Type="Int32" />
         </EntityType>
         <EntityType Name="Sample">
           <Key>
@@ -510,6 +512,164 @@
           <Property Name="BugsQA" Type="Boolean" />
           <Property Name="DuplicatedCS" Type="Boolean" />
           <Property Name="Valid" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Station">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StationNumber" Type="Int32" />
+          <Property Name="River" Type="String" MaxLength="17" FixedLength="false" Unicode="false" />
+          <Property Name="AquaticModelIndex" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="WaterCode" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="WaterBodyID" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="StationType" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="QUADI" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Township" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Range" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Section" Type="Int32" />
+          <Property Name="QuaterSection" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Grid" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="StationQUAD" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="RWWaterShed" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="WQCCWaterShed" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="HydroUnit" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="EcoRegion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="StationName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="StationStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Elevation" Type="Double" />
+          <Property Name="WaterShedRegion" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Longtitude" Type="Double" />
+          <Property Name="Latitude" Type="Double" />
+          <Property Name="County" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="State" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="NearCity" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Move" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="1024" FixedLength="false" Unicode="false" />
+          <Property Name="UTMX" Type="Double" />
+          <Property Name="UTMY" Type="Double" />
+          <Property Name="Region" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Comments" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="USGS" Type="Boolean" />
+          <Property Name="StateEngineering" Type="Boolean" />
+          <Property Name="DateCreated" Type="DateTime" Precision="3" />
+          <Property Name="UserCreated" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="DateLastModified" Type="DateTime" Precision="3" />
+          <Property Name="UserLastModified" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="StoretUploaded" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="StationFiles" Relationship="RiverWatchModel.FK_StationFile_StationFile" FromRole="Station" ToRole="StationFile" />
+        </EntityType>
+        <EntityType Name="StationFile">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StationID" Type="Int32" Nullable="false" />
+          <Property Name="FileName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="FileUrl" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="FileSizeInBytes" Type="Int64" Nullable="false" />
+          <Property Name="FileSizeInKb" Type="Int64" Nullable="false" />
+          <Property Name="FileExt" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="Primary" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Station" Relationship="RiverWatchModel.FK_StationFile_StationFile" FromRole="StationFile" ToRole="Station" />
+        </EntityType>
+        <Association Name="FK_StationFile_StationFile">
+          <End Type="RiverWatchModel.Station" Role="Station" Multiplicity="1" />
+          <End Type="RiverWatchModel.StationFile" Role="StationFile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Station">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StationFile">
+              <PropertyRef Name="StationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="NEWexpWater">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="tblSampleID" Type="Int32" />
+          <Property Name="SampleNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Event" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="TypeCode" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="WaterShed" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="RiverName" Type="String" MaxLength="17" FixedLength="false" Unicode="false" />
+          <Property Name="KitNumber" Type="Int32" />
+          <Property Name="OrganizationName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="OrganizationID" Type="Int32" />
+          <Property Name="StationID" Type="Int32" />
+          <Property Name="StationNumber" Type="Int32" />
+          <Property Name="StationName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MetalsBarCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="NutrientBarCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="FieldBarCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="BugsBarCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="SampleDate" Type="DateTime" Precision="3" />
+          <Property Name="USGS_Flow" Type="Double" />
+          <Property Name="PH" Type="Double" />
+          <Property Name="TempC" Type="Double" />
+          <Property Name="PHEN_ALK" Type="Double" />
+          <Property Name="TOTAL_ALK" Type="Double" />
+          <Property Name="TOTAL_HARD" Type="Double" />
+          <Property Name="DO_MGL" Type="Double" />
+          <Property Name="DOSAT" Type="Int32" />
+          <Property Name="AL_D" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="AL_T" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="AS_D" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="AS_T" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="CA_D" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="CA_T" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="CD_D" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="CD_T" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="CU_D" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="CU_T" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="FE_D" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="FE_T" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="MG_D" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="MG_T" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="MN_D" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="MN_T" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="PB_D" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="PB_T" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="SE_D" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="SE_T" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="ZN_D" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="ZN_T" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="NA_D" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="NA_T" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="K_D" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="K_T" Type="Decimal" Precision="28" Scale="10" />
+          <Property Name="Ammonia" Type="Double" />
+          <Property Name="Chloride" Type="Double" />
+          <Property Name="ChlorophyllA" Type="Double" />
+          <Property Name="DOC" Type="Double" />
+          <Property Name="NN" Type="Double" />
+          <Property Name="OP" Type="Double" />
+          <Property Name="Sulfate" Type="Double" />
+          <Property Name="totN" Type="Double" />
+          <Property Name="totP" Type="Double" />
+          <Property Name="TKN" Type="Double" />
+          <Property Name="orgN" Type="Double" />
+          <Property Name="TSS" Type="Double" />
+          <Property Name="Batch" Type="Int32" />
+          <Property Name="SampleComments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FieldComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="NutrientComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MetalsComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BugsComments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BenthicsComments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="BadBlank" Type="Boolean" />
+          <Property Name="BadDuplicate" Type="Boolean" />
+          <Property Name="BadSample" Type="Boolean" />
+          <Property Name="Valid" Type="Boolean" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -644,12 +804,112 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Samples">
+            <EntityTypeMapping TypeName="RiverWatchModel.Sample">
+              <MappingFragment StoreEntitySet="Samples">
+                <ScalarProperty Name="Valid" ColumnName="Valid" />
+                <ScalarProperty Name="DuplicatedCS" ColumnName="DuplicatedCS" />
+                <ScalarProperty Name="BugsQA" ColumnName="BugsQA" />
+                <ScalarProperty Name="DuplicatedMetals" ColumnName="DuplicatedMetals" />
+                <ScalarProperty Name="BlankMetals" ColumnName="BlankMetals" />
+                <ScalarProperty Name="ChlorideSulfate" ColumnName="ChlorideSulfate" />
+                <ScalarProperty Name="UserLastModified" ColumnName="UserLastModified" />
+                <ScalarProperty Name="DateLastModified" ColumnName="DateLastModified" />
+                <ScalarProperty Name="UserCreated" ColumnName="UserCreated" />
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="DuplicatedNP" ColumnName="DuplicatedNP" />
+                <ScalarProperty Name="DuplicatedTSS" ColumnName="DuplicatedTSS" />
+                <ScalarProperty Name="NitratePhosphorus" ColumnName="NitratePhosphorus" />
+                <ScalarProperty Name="TotalSuspendedSolids" ColumnName="TotalSuspendedSolids" />
+                <ScalarProperty Name="NoNutrient" ColumnName="NoNutrient" />
+                <ScalarProperty Name="Bug" ColumnName="Bug" />
+                <ScalarProperty Name="PhysicalHabitat" ColumnName="PhysicalHabitat" />
+                <ScalarProperty Name="NoMetals" ColumnName="NoMetals" />
+                <ScalarProperty Name="MissingDataSheetReceived" ColumnName="MissingDataSheetReceived" />
+                <ScalarProperty Name="ChainOfCustody" ColumnName="ChainOfCustody" />
+                <ScalarProperty Name="MissingDataSheetReqDate" ColumnName="MissingDataSheetReqDate" />
+                <ScalarProperty Name="DataSheetIncluded" ColumnName="DataSheetIncluded" />
+                <ScalarProperty Name="DateReceived" ColumnName="DateReceived" />
+                <ScalarProperty Name="TimeCollected" ColumnName="TimeCollected" />
+                <ScalarProperty Name="DateCollected" ColumnName="DateCollected" />
+                <ScalarProperty Name="NumberSample" ColumnName="NumberSample" />
+                <ScalarProperty Name="SampleNumber" ColumnName="SampleNumber" />
+                <ScalarProperty Name="OrganizationID" ColumnName="OrganizationID" />
+                <ScalarProperty Name="StationID" ColumnName="StationID" />
+                <ScalarProperty Name="SampleID" ColumnName="SampleID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Stations">
+            <EntityTypeMapping TypeName="RiverWatchModel.Station">
+              <MappingFragment StoreEntitySet="Station">
+                <ScalarProperty Name="StoretUploaded" ColumnName="StoretUploaded" />
+                <ScalarProperty Name="UserLastModified" ColumnName="UserLastModified" />
+                <ScalarProperty Name="DateLastModified" ColumnName="DateLastModified" />
+                <ScalarProperty Name="UserCreated" ColumnName="UserCreated" />
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+                <ScalarProperty Name="StateEngineering" ColumnName="StateEngineering" />
+                <ScalarProperty Name="USGS" ColumnName="USGS" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="UTMY" ColumnName="UTMY" />
+                <ScalarProperty Name="UTMX" ColumnName="UTMX" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Move" ColumnName="Move" />
+                <ScalarProperty Name="NearCity" ColumnName="NearCity" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="County" ColumnName="County" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="Longtitude" ColumnName="Longtitude" />
+                <ScalarProperty Name="WaterShedRegion" ColumnName="WaterShedRegion" />
+                <ScalarProperty Name="Elevation" ColumnName="Elevation" />
+                <ScalarProperty Name="StationStatus" ColumnName="StationStatus" />
+                <ScalarProperty Name="StationName" ColumnName="StationName" />
+                <ScalarProperty Name="EcoRegion" ColumnName="EcoRegion" />
+                <ScalarProperty Name="HydroUnit" ColumnName="HydroUnit" />
+                <ScalarProperty Name="WQCCWaterShed" ColumnName="WQCCWaterShed" />
+                <ScalarProperty Name="RWWaterShed" ColumnName="RWWaterShed" />
+                <ScalarProperty Name="StationQUAD" ColumnName="StationQUAD" />
+                <ScalarProperty Name="Grid" ColumnName="Grid" />
+                <ScalarProperty Name="QuaterSection" ColumnName="QuaterSection" />
+                <ScalarProperty Name="Section" ColumnName="Section" />
+                <ScalarProperty Name="Range" ColumnName="Range" />
+                <ScalarProperty Name="Township" ColumnName="Township" />
+                <ScalarProperty Name="QUADI" ColumnName="QUADI" />
+                <ScalarProperty Name="StationType" ColumnName="StationType" />
+                <ScalarProperty Name="WaterBodyID" ColumnName="WaterBodyID" />
+                <ScalarProperty Name="WaterCode" ColumnName="WaterCode" />
+                <ScalarProperty Name="AquaticModelIndex" ColumnName="AquaticModelIndex" />
+                <ScalarProperty Name="River" ColumnName="River" />
+                <ScalarProperty Name="StationNumber" ColumnName="StationNumber" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StationFiles">
+            <EntityTypeMapping TypeName="RiverWatchModel.StationFile">
+              <MappingFragment StoreEntitySet="StationFile">
+                <ScalarProperty Name="Primary" ColumnName="Primary" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="FileExt" ColumnName="FileExt" />
+                <ScalarProperty Name="FileSizeInKb" ColumnName="FileSizeInKb" />
+                <ScalarProperty Name="FileSizeInBytes" ColumnName="FileSizeInBytes" />
+                <ScalarProperty Name="FileUrl" ColumnName="FileUrl" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="StationID" ColumnName="StationID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="NEWexpWaters">
             <EntityTypeMapping TypeName="RiverWatchModel.NEWexpWater">
               <MappingFragment StoreEntitySet="NEWexpWater">
-                <ScalarProperty Name="StationNumber" ColumnName="StationNumber" />
-                <ScalarProperty Name="SampleComments" ColumnName="SampleComments" />
-                <ScalarProperty Name="OrganizationID" ColumnName="OrganizationID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Valid" ColumnName="Valid" />
                 <ScalarProperty Name="BadSample" ColumnName="BadSample" />
                 <ScalarProperty Name="BadDuplicate" ColumnName="BadDuplicate" />
@@ -661,6 +921,8 @@
                 <ScalarProperty Name="MetalsComment" ColumnName="MetalsComment" />
                 <ScalarProperty Name="NutrientComment" ColumnName="NutrientComment" />
                 <ScalarProperty Name="FieldComment" ColumnName="FieldComment" />
+                <ScalarProperty Name="SampleComments" ColumnName="SampleComments" />
+                <ScalarProperty Name="Batch" ColumnName="Batch" />
                 <ScalarProperty Name="TSS" ColumnName="TSS" />
                 <ScalarProperty Name="orgN" ColumnName="orgN" />
                 <ScalarProperty Name="TKN" ColumnName="TKN" />
@@ -673,7 +935,6 @@
                 <ScalarProperty Name="ChlorophyllA" ColumnName="ChlorophyllA" />
                 <ScalarProperty Name="Chloride" ColumnName="Chloride" />
                 <ScalarProperty Name="Ammonia" ColumnName="Ammonia" />
-                <ScalarProperty Name="Rep" ColumnName="Rep" />
                 <ScalarProperty Name="K_T" ColumnName="K_T" />
                 <ScalarProperty Name="K_D" ColumnName="K_D" />
                 <ScalarProperty Name="NA_T" ColumnName="NA_T" />
@@ -714,55 +975,17 @@
                 <ScalarProperty Name="NutrientBarCode" ColumnName="NutrientBarCode" />
                 <ScalarProperty Name="MetalsBarCode" ColumnName="MetalsBarCode" />
                 <ScalarProperty Name="StationName" ColumnName="StationName" />
-                <ScalarProperty Name="TypeCode" ColumnName="TypeCode" />
+                <ScalarProperty Name="StationNumber" ColumnName="StationNumber" />
                 <ScalarProperty Name="StationID" ColumnName="StationID" />
+                <ScalarProperty Name="OrganizationID" ColumnName="OrganizationID" />
                 <ScalarProperty Name="OrganizationName" ColumnName="OrganizationName" />
                 <ScalarProperty Name="KitNumber" ColumnName="KitNumber" />
                 <ScalarProperty Name="RiverName" ColumnName="RiverName" />
-                <ScalarProperty Name="River_CD" ColumnName="River_CD" />
                 <ScalarProperty Name="WaterShed" ColumnName="WaterShed" />
+                <ScalarProperty Name="TypeCode" ColumnName="TypeCode" />
                 <ScalarProperty Name="Event" ColumnName="Event" />
                 <ScalarProperty Name="SampleNumber" ColumnName="SampleNumber" />
                 <ScalarProperty Name="tblSampleID" ColumnName="tblSampleID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Samples">
-            <EntityTypeMapping TypeName="RiverWatchModel.Sample">
-              <MappingFragment StoreEntitySet="Samples">
-                <ScalarProperty Name="Valid" ColumnName="Valid" />
-                <ScalarProperty Name="DuplicatedCS" ColumnName="DuplicatedCS" />
-                <ScalarProperty Name="BugsQA" ColumnName="BugsQA" />
-                <ScalarProperty Name="DuplicatedMetals" ColumnName="DuplicatedMetals" />
-                <ScalarProperty Name="BlankMetals" ColumnName="BlankMetals" />
-                <ScalarProperty Name="ChlorideSulfate" ColumnName="ChlorideSulfate" />
-                <ScalarProperty Name="UserLastModified" ColumnName="UserLastModified" />
-                <ScalarProperty Name="DateLastModified" ColumnName="DateLastModified" />
-                <ScalarProperty Name="UserCreated" ColumnName="UserCreated" />
-                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
-                <ScalarProperty Name="Comment" ColumnName="Comment" />
-                <ScalarProperty Name="DuplicatedNP" ColumnName="DuplicatedNP" />
-                <ScalarProperty Name="DuplicatedTSS" ColumnName="DuplicatedTSS" />
-                <ScalarProperty Name="NitratePhosphorus" ColumnName="NitratePhosphorus" />
-                <ScalarProperty Name="TotalSuspendedSolids" ColumnName="TotalSuspendedSolids" />
-                <ScalarProperty Name="NoNutrient" ColumnName="NoNutrient" />
-                <ScalarProperty Name="Bug" ColumnName="Bug" />
-                <ScalarProperty Name="PhysicalHabitat" ColumnName="PhysicalHabitat" />
-                <ScalarProperty Name="NoMetals" ColumnName="NoMetals" />
-                <ScalarProperty Name="MissingDataSheetReceived" ColumnName="MissingDataSheetReceived" />
-                <ScalarProperty Name="ChainOfCustody" ColumnName="ChainOfCustody" />
-                <ScalarProperty Name="MissingDataSheetReqDate" ColumnName="MissingDataSheetReqDate" />
-                <ScalarProperty Name="DataSheetIncluded" ColumnName="DataSheetIncluded" />
-                <ScalarProperty Name="DateReceived" ColumnName="DateReceived" />
-                <ScalarProperty Name="TimeCollected" ColumnName="TimeCollected" />
-                <ScalarProperty Name="DateCollected" ColumnName="DateCollected" />
-                <ScalarProperty Name="NumberSample" ColumnName="NumberSample" />
-                <ScalarProperty Name="SampleNumber" ColumnName="SampleNumber" />
-                <ScalarProperty Name="OrganizationID" ColumnName="OrganizationID" />
-                <ScalarProperty Name="StationID" ColumnName="StationID" />
-                <ScalarProperty Name="SampleID" ColumnName="SampleID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

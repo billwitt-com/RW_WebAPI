@@ -11,9 +11,9 @@
         <EntityTypeShape EntityType="RiverWatchModel.MetalBarCode" Width="1.5" PointX="7.375" PointY="0.75" />
         <EntityTypeShape EntityType="RiverWatchModel.Sample" Width="1.5" PointX="9.375" PointY="0.75" />
         <EntityTypeShape EntityType="RiverWatchModel.Station" Width="1.5" PointX="9.375" PointY="9.25" />
-        <EntityTypeShape EntityType="RiverWatchModel.StationFile" Width="1.5" PointX="11.625" PointY="12" />
-        <AssociationConnector Association="RiverWatchModel.FK_StationFile_StationFile" />
         <EntityTypeShape EntityType="RiverWatchModel.NEWexpWater" Width="1.5" PointX="0.75" PointY="10.75" />
+        <EntityTypeShape EntityType="RiverWatchModel.StationImage" Width="1.5" PointX="11.625" PointY="12" />
+        <AssociationConnector Association="RiverWatchModel.FK_StationImage_StationImage" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

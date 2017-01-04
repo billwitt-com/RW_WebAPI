@@ -29,19 +29,19 @@ namespace RWICPreceiverApp
                 defaults: new { id = RouteParameter.Optional }
             );
 
-            config.Routes.MapHttpRoute(
-                "PostBlobUpload",
-                "blobs/upload/{stationNum}/{user}",
-                new { controller = "Blobs", action = "PostBlobUpload" },
-                new { httpMethod = new HttpMethodConstraint("POST") }
-            );
+            //config.Routes.MapHttpRoute(
+            //    "PostBlobUpload",
+            //    "api/uploadImage",
+            //    new { controller = "StationImage", action = "UploadStationImage" },
+            //    new { httpMethod = new HttpMethodConstraint("POST") }
+            //);
 
-            config.Routes.MapHttpRoute(
-                "GetBlobDownload",
-                "blobs/{blobId}/download",
-                new { controller = "Blobs", action = "GetBlobDownload" },
-                new { httpMethod = new HttpMethodConstraint("GET") }
-            );
+            //config.Routes.MapHttpRoute(
+            //    "GetBlobDownload",
+            //    "api/downloadImage",
+            //    new { controller = "StationImage", action = "DownloadStationImage" },
+            //    new { httpMethod = new HttpMethodConstraint("GET") }
+            //);
         }
     }
 }

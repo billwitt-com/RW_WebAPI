@@ -292,7 +292,7 @@
           <Property Name="UserLastModified" Type="varchar" MaxLength="25" />
           <Property Name="StoretUploaded" Type="varchar" MaxLength="50" />
         </EntityType>
-        <EntityType Name="StationFile">
+        <EntityType Name="StationImage">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
@@ -309,14 +309,14 @@
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="Primary" Type="bit" Nullable="false" />
         </EntityType>
-        <Association Name="FK_StationFile_StationFile">
+        <Association Name="FK_StationImage_StationImage">
           <End Role="Station" Type="Self.Station" Multiplicity="1" />
-          <End Role="StationFile" Type="Self.StationFile" Multiplicity="*" />
+          <End Role="StationImage" Type="Self.StationImage" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Station">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="StationFile">
+            <Dependent Role="StationImage">
               <PropertyRef Name="StationID" />
             </Dependent>
           </ReferentialConstraint>
@@ -329,10 +329,10 @@
           <EntitySet Name="NEWexpWater" EntityType="Self.NEWexpWater" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Samples" EntityType="Self.Samples" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Station" EntityType="Self.Station" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="StationFile" EntityType="Self.StationFile" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_StationFile_StationFile" Association="Self.FK_StationFile_StationFile">
+          <EntitySet Name="StationImage" EntityType="Self.StationImage" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_StationImage_StationImage" Association="Self.FK_StationImage_StationImage">
             <End Role="Station" EntitySet="Station" />
-            <End Role="StationFile" EntitySet="StationFile" />
+            <End Role="StationImage" EntitySet="StationImage" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -447,12 +447,12 @@
           <EntitySet Name="MetalBarCodes" EntityType="RiverWatchModel.MetalBarCode" />
           <EntitySet Name="Samples" EntityType="RiverWatchModel.Sample" />
           <EntitySet Name="Stations" EntityType="RiverWatchModel.Station" />
-          <EntitySet Name="StationFiles" EntityType="RiverWatchModel.StationFile" />
-          <AssociationSet Name="FK_StationFile_StationFile" Association="RiverWatchModel.FK_StationFile_StationFile">
-            <End Role="Station" EntitySet="Stations" />
-            <End Role="StationFile" EntitySet="StationFiles" />
-          </AssociationSet>
           <EntitySet Name="NEWexpWaters" EntityType="RiverWatchModel.NEWexpWater" />
+          <EntitySet Name="StationImages" EntityType="RiverWatchModel.StationImage" />
+          <AssociationSet Name="FK_StationImage_StationImage" Association="RiverWatchModel.FK_StationImage_StationImage">
+            <End Role="Station" EntitySet="Stations" />
+            <End Role="StationImage" EntitySet="StationImages" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="MetalBarCode">
           <Key>
@@ -557,38 +557,8 @@
           <Property Name="DateLastModified" Type="DateTime" Precision="3" />
           <Property Name="UserLastModified" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
           <Property Name="StoretUploaded" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="StationFiles" Relationship="RiverWatchModel.FK_StationFile_StationFile" FromRole="Station" ToRole="StationFile" />
+          <NavigationProperty Name="StationImages" Relationship="RiverWatchModel.FK_StationImage_StationImage" FromRole="Station" ToRole="StationImage" />
         </EntityType>
-        <EntityType Name="StationFile">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StationID" Type="Int32" Nullable="false" />
-          <Property Name="FileName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="FileUrl" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="FileSizeInBytes" Type="Int64" Nullable="false" />
-          <Property Name="FileSizeInKb" Type="Int64" Nullable="false" />
-          <Property Name="FileExt" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-          <Property Name="Primary" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Station" Relationship="RiverWatchModel.FK_StationFile_StationFile" FromRole="StationFile" ToRole="Station" />
-        </EntityType>
-        <Association Name="FK_StationFile_StationFile">
-          <End Type="RiverWatchModel.Station" Role="Station" Multiplicity="1" />
-          <End Type="RiverWatchModel.StationFile" Role="StationFile" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Station">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="StationFile">
-              <PropertyRef Name="StationID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="NEWexpWater">
           <Key>
             <PropertyRef Name="ID" />
@@ -671,6 +641,36 @@
           <Property Name="Valid" Type="Boolean" Nullable="false" />
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
+        <EntityType Name="StationImage">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StationID" Type="Int32" Nullable="false" />
+          <Property Name="FileName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="FileUrl" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="FileSizeInBytes" Type="Int64" Nullable="false" />
+          <Property Name="FileSizeInKb" Type="Int64" Nullable="false" />
+          <Property Name="FileExt" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="Primary" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Station" Relationship="RiverWatchModel.FK_StationImage_StationImage" FromRole="StationImage" ToRole="Station" />
+        </EntityType>
+        <Association Name="FK_StationImage_StationImage">
+          <End Type="RiverWatchModel.Station" Role="Station" Multiplicity="1" />
+          <End Type="RiverWatchModel.StationImage" Role="StationImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Station">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StationImage">
+              <PropertyRef Name="StationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -888,24 +888,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="StationFiles">
-            <EntityTypeMapping TypeName="RiverWatchModel.StationFile">
-              <MappingFragment StoreEntitySet="StationFile">
-                <ScalarProperty Name="Primary" ColumnName="Primary" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="FileExt" ColumnName="FileExt" />
-                <ScalarProperty Name="FileSizeInKb" ColumnName="FileSizeInKb" />
-                <ScalarProperty Name="FileSizeInBytes" ColumnName="FileSizeInBytes" />
-                <ScalarProperty Name="FileUrl" ColumnName="FileUrl" />
-                <ScalarProperty Name="FileName" ColumnName="FileName" />
-                <ScalarProperty Name="StationID" ColumnName="StationID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="NEWexpWaters">
             <EntityTypeMapping TypeName="RiverWatchModel.NEWexpWater">
               <MappingFragment StoreEntitySet="NEWexpWater">
@@ -986,6 +968,24 @@
                 <ScalarProperty Name="Event" ColumnName="Event" />
                 <ScalarProperty Name="SampleNumber" ColumnName="SampleNumber" />
                 <ScalarProperty Name="tblSampleID" ColumnName="tblSampleID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StationImages">
+            <EntityTypeMapping TypeName="RiverWatchModel.StationImage">
+              <MappingFragment StoreEntitySet="StationImage">
+                <ScalarProperty Name="Primary" ColumnName="Primary" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="FileExt" ColumnName="FileExt" />
+                <ScalarProperty Name="FileSizeInKb" ColumnName="FileSizeInKb" />
+                <ScalarProperty Name="FileSizeInBytes" ColumnName="FileSizeInBytes" />
+                <ScalarProperty Name="FileUrl" ColumnName="FileUrl" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="StationID" ColumnName="StationID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

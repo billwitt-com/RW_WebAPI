@@ -31,7 +31,7 @@ namespace RWICPreceiverApp.Models
         public virtual DbSet<MetalBarCode> MetalBarCodes { get; set; }
         public virtual DbSet<Sample> Samples { get; set; }
         public virtual DbSet<Station> Stations { get; set; }
-        public virtual DbSet<StationFile> StationFiles { get; set; }
         public virtual DbSet<NEWexpWater> NEWexpWaters { get; set; }
+        public virtual DbSet<StationImage> StationImages { get; set; }
     }
 }

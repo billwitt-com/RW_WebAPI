@@ -12,7 +12,7 @@ namespace RWICPreceiverApp.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class StationFile
+    public partial class StationImage
     {
         public int ID { get; set; }
         public int StationID { get; set; }

@@ -13,7 +13,8 @@ using System.Web.Http.Description;
 
 namespace RWICPreceiverApp.Controllers
 {
-    public class BlobsController : ApiController
+    [RoutePrefix("api/StationImage")]
+    public class StationImageController : ApiController
     {
         // Interface in place so you can resolve with IoC container of your choice
         private readonly IBlobService _service = new BlobService();
@@ -21,9 +22,13 @@ namespace RWICPreceiverApp.Controllers
         /// <summary>
         /// Uploads one or more blob files.
         /// </summary>
+        /// <param name="stationID">The ID of the station.</param>
+        /// <param name="user">The name of the user uploading the image.</param>
         /// <returns></returns>
         [ResponseType(typeof(List<BlobUploadModel>))]
-        public async Task<IHttpActionResult> PostBlobUpload(int stationNum, string user)
+        [Route("PostStationImage/{stationID:int}/{user}")]
+        [HttpPost]
+        public async Task<IHttpActionResult> PostStationImage(int stationID, string user)
         {
             try
             {
@@ -35,20 +40,20 @@ namespace RWICPreceiverApp.Controllers
                 //validated = VC.checkCreds(request);
                 //if (!validated)
                 //    return Unauthorized();
-
+                var requestt = Request;
                 // This endpoint only supports multipart form data
                 if (!Request.Content.IsMimeMultipartContent("form-data"))
                 {
                     return StatusCode(HttpStatusCode.UnsupportedMediaType);
                 }
 
-                if(stationNum <= 0)
+                if(stationID <= 0)
                 {
                     return BadRequest();
                 }
 
                 // Call service to perform upload, then check result to return as content
-                var result = await _service.UploadBlobs(Request.Content, stationNum, user);
+                var result = await _service.UploadBlobs(Request.Content, stationID, user);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(result);
@@ -66,15 +71,17 @@ namespace RWICPreceiverApp.Controllers
         /// <summary>
         /// Downloads a blob file.
         /// </summary>
-        /// <param name="blobId">The ID of the blob.</param>
-        /// <returns></returns>
-        public async Task<HttpResponseMessage> GetBlobDownload(int blobId)
+        /// <param name="stationID">The ID of the blob.</param>
+        /// <returns>A Stations Image</returns>
+        [Route("GetStationImage/{stationID}")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetStationImage(int stationID)
         {
             // IMPORTANT: This must return HttpResponseMessage instead of IHttpActionResult
 
             try
             {
-                var result = await _service.DownloadBlob(blobId);
+                var result = await _service.DownloadBlob(stationID);
                 if (result == null)
                 {
                     return new HttpResponseMessage(HttpStatusCode.NotFound);

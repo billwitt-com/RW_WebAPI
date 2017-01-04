@@ -14,13 +14,13 @@ namespace RWICPreceiverApp.Services
 {
     public interface IBlobService
     {
-        Task<List<BlobUploadModel>> UploadBlobs(HttpContent httpContent, int stationNum, string user);
-        Task<BlobDownloadModel> DownloadBlob(int blobId);
+        Task<List<BlobUploadModel>> UploadBlobs(HttpContent httpContent, int stationID, string user);
+        Task<BlobDownloadModel> DownloadBlob(int stationID);
     }
 
     public class BlobService : IBlobService
     {
-        public async Task<List<BlobUploadModel>> UploadBlobs(HttpContent httpContent, int stationNum, string user)
+        public async Task<List<BlobUploadModel>> UploadBlobs(HttpContent httpContent, int stationID, string user)
         {
             var blobUploadProvider = new BlobStorageUploadProvider();          
 
@@ -38,7 +38,7 @@ namespace RWICPreceiverApp.Services
                        
             // TODO: Use data in the list to store blob info in your
             // database so that you can always retrieve it later.
-            if(!SaveBlob(uploadList, stationNum, user))
+            if(!SaveImage(uploadList, stationID, user))
             {
                 return null;
             }
@@ -46,17 +46,17 @@ namespace RWICPreceiverApp.Services
             return uploadList;
         }
 
-        public async Task<BlobDownloadModel> DownloadBlob(int blobId)
+        public async Task<BlobDownloadModel> DownloadBlob(int stationID)
         {
             // TODO: You must implement this helper method. It should retrieve blob info
             // from your database, based on the blobId. The record should contain the
             // blobName, which you should return as the result of this helper method.
-            var blobName = GetBlobName(blobId);
+            var imageName = GetImageName(stationID);
 
-            if (!String.IsNullOrEmpty(blobName))
+            if (!String.IsNullOrEmpty(imageName))
             {
                 var container = BlobHelper.GetBlobContainer();
-                var blob = container.GetBlockBlobReference(blobName);
+                var blob = container.GetBlockBlobReference(imageName);
 
                 // Download the blob into a memory stream. Notice that we're not putting the memory
                 // stream in a using statement. This is because we need the stream to be open for the
@@ -70,7 +70,7 @@ namespace RWICPreceiverApp.Services
                 var fileName = blob.Name.Substring(lastPos + 1, blob.Name.Length - lastPos - 1);
 
                 // Build and return the download model with the blob stream and its relevant info
-                var download = new BlobDownloadModel
+                var downloadModel = new BlobDownloadModel
                 {
                     BlobStream = ms,
                     BlobFileName = fileName,
@@ -78,38 +78,50 @@ namespace RWICPreceiverApp.Services
                     BlobContentType = blob.Properties.ContentType
                 };
 
-                return download;
+                return downloadModel;
             }
 
             // Otherwise
             return null;
         }
 
-        private string GetBlobName(int blobId)
+        private string GetImageName(int stationID)
         {
-            return "RWLogo.png";
+            string imageName = string.Empty;
+
+            using (RiverWatchEntities _db = new RiverWatchEntities())
+            {
+                imageName = _db.StationImages
+                               .Where(si => si.StationID == stationID && si.Primary == true)
+                               .Select(si => si.FileName)
+                               .FirstOrDefault();
+
+            }
+            return imageName;
         }
 
-        private bool SaveBlob(List<BlobUploadModel> uploadList, int stationNum, string user)
+        private bool SaveImage(List<BlobUploadModel> uploadList, int stationID, string user)
         {
             bool exists = true;
 
             using (RiverWatchEntities _db = new RiverWatchEntities())
             {
-                int stationID = _db.Stations
-                                   .Where(s => s.StationNumber == stationNum)
-                                   .Select(s => s.ID)
-                                   .FirstOrDefault();
-                if(stationID > 0)
+                int stationIDFromStationTable = _db.Stations
+                                                   .Where(s => s.ID == stationID)
+                                                   .Select(s => s.ID)
+                                                   .FirstOrDefault();
+                if(stationIDFromStationTable > 0)
                 {
                     foreach (var file in uploadList)
                     {
-                        var stationFile = new StationFile()
+                        string fileExt = Path.GetExtension(file.FileName);
+                        long fileSizeInKb = file.FileSizeInKb;
+                        var stationImage = new StationImage()
                         {
                             StationID = stationID,
                             FileName = file.FileName,
                             FileUrl = file.FileUrl,
-                            FileExt = Path.GetExtension(file.FileName),
+                            FileExt = fileExt,
                             FileSizeInBytes = file.FileSizeInBytes,
                             FileSizeInKb = file.FileSizeInKb,
                             CreatedBy = user,
@@ -117,13 +129,21 @@ namespace RWICPreceiverApp.Services
                             Primary = true
                         };
 
-                        _db.StationFiles.Add(stationFile);
+                        _db.StationImages.Add(stationImage);
                         _db.SaveChanges();
+                        //if ((fileExt.ToLower().Equals(".jpg") || fileExt.ToLower().Equals(".png")) && fileSizeInKb < 1001)
+                        //{
+
+                        //}
+                        //else
+                        //{
+                        //    exists = false;
+                        //}                        
                     }
                 }
                 else
                 {
-                    return exists = false;
+                    exists = false;
                 }                
             }
 

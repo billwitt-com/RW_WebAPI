@@ -16,7 +16,7 @@ namespace RWICPreceiverApp.Models
     {
         public Station()
         {
-            this.StationFiles = new HashSet<StationFile>();
+            this.StationImages = new HashSet<StationImage>();
         }
     
         public int ID { get; set; }
@@ -60,6 +60,6 @@ namespace RWICPreceiverApp.Models
         public string UserLastModified { get; set; }
         public string StoretUploaded { get; set; }
     
-        public virtual ICollection<StationFile> StationFiles { get; set; }
+        public virtual ICollection<StationImage> StationImages { get; set; }
     }
 }

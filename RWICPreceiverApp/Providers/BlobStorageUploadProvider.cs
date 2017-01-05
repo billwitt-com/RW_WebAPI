@@ -14,11 +14,11 @@ namespace RWICPreceiverApp.Providers
 
     public class BlobStorageUploadProvider : MultipartFileStreamProvider
     {
-        public List<BlobUploadModel> Uploads { get; set; }
+        public List<StationImageUploadModel> Uploads { get; set; }
 
         public BlobStorageUploadProvider() : base(Path.GetTempPath())
         {
-            Uploads = new List<BlobUploadModel>();
+            Uploads = new List<StationImageUploadModel>();
         }
 
         public override Task ExecutePostProcessingAsync()
@@ -40,27 +40,33 @@ namespace RWICPreceiverApp.Providers
                         // Retrieve reference to a blob
                         var blobContainer = BlobHelper.GetBlobContainer();
                         var blob = blobContainer.GetBlockBlobReference(fileName);
-                        //if(blob.Metadata)
-                        // Set the blob content type
-                        blob.Properties.ContentType = fileData.Headers.ContentType.MediaType;                    
 
-                        // Upload file into blob storage, basically copying it from local disk into Azure
-                        using (var fs = File.OpenRead(fileData.LocalFileName))
+                        bool blobExists = blob.Exists();
+                        //if is doesn't exist, then add it.
+                        if (!blobExists)
                         {
-                            long fileSizeInKB = (long)(fs.Length / 1024);
-                            //If the image is greater than 1 MB don't save it 
-                            if (fileSizeInKB > 1001)
+                            // Set the blob content type
+                            blob.Properties.ContentType = fileData.Headers.ContentType.MediaType;                    
+
+                            // Upload file into blob storage, basically copying it from local disk into Azure
+                            using (var fs = File.OpenRead(fileData.LocalFileName))
                             {
-                                continue;
+                                long fileSizeInKB = (long)(fs.Length / 1024);
+                                //If the image is greater than 1 MB don't save it 
+                                if (fileSizeInKB > 1001)
+                                {
+                                    continue;
+                                }
+                            
+                                blob.UploadFromStream(fs);
                             }
-                            blob.UploadFromStream(fs);
+
+                            // Delete local file from disk
+                            File.Delete(fileData.LocalFileName);                            
                         }
 
-                        // Delete local file from disk
-                        File.Delete(fileData.LocalFileName);
-
                         // Create blob upload model with properties from blob info
-                        var blobUpload = new BlobUploadModel
+                        var blobUpload = new StationImageUploadModel
                         {
                             FileName = blob.Name,
                             FileUrl = blob.Uri.AbsoluteUri,

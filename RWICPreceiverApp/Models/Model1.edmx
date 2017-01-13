@@ -303,12 +303,35 @@
           <Property Name="FileSizeInBytes" Type="bigint" Nullable="false" />
           <Property Name="FileSizeInKb" Type="bigint" Nullable="false" />
           <Property Name="FileExt" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Primary" Type="bit" Nullable="false" />
+          <Property Name="ImageType" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="200" />
+          <Property Name="PhysHabYear" Type="int" Nullable="false" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="200" />
           <Property Name="ModifiedDate" Type="datetime" />
-          <Property Name="Primary" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="StationImageType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="EnforcePrimary" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_StationImage_ImageType">
+          <End Role="StationImageType" Type="Self.StationImageType" Multiplicity="1" />
+          <End Role="StationImage" Type="Self.StationImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StationImageType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StationImage">
+              <PropertyRef Name="ImageType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_StationImage_StationImage">
           <End Role="Station" Type="Self.Station" Multiplicity="1" />
           <End Role="StationImage" Type="Self.StationImage" Multiplicity="*" />
@@ -330,6 +353,11 @@
           <EntitySet Name="Samples" EntityType="Self.Samples" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Station" EntityType="Self.Station" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StationImage" EntityType="Self.StationImage" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StationImageType" EntityType="Self.StationImageType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_StationImage_ImageType" Association="Self.FK_StationImage_ImageType">
+            <End Role="StationImageType" EntitySet="StationImageType" />
+            <End Role="StationImage" EntitySet="StationImage" />
+          </AssociationSet>
           <AssociationSet Name="FK_StationImage_StationImage" Association="Self.FK_StationImage_StationImage">
             <End Role="Station" EntitySet="Station" />
             <End Role="StationImage" EntitySet="StationImage" />
@@ -451,6 +479,11 @@
           <EntitySet Name="StationImages" EntityType="RiverWatchModel.StationImage" />
           <AssociationSet Name="FK_StationImage_StationImage" Association="RiverWatchModel.FK_StationImage_StationImage">
             <End Role="Station" EntitySet="Stations" />
+            <End Role="StationImage" EntitySet="StationImages" />
+          </AssociationSet>
+          <EntitySet Name="StationImageTypes" EntityType="RiverWatchModel.StationImageType" />
+          <AssociationSet Name="FK_StationImage_ImageType" Association="RiverWatchModel.FK_StationImage_ImageType">
+            <End Role="StationImageType" EntitySet="StationImageTypes" />
             <End Role="StationImage" EntitySet="StationImages" />
           </AssociationSet>
         </EntityContainer>
@@ -652,12 +685,16 @@
           <Property Name="FileSizeInBytes" Type="Int64" Nullable="false" />
           <Property Name="FileSizeInKb" Type="Int64" Nullable="false" />
           <Property Name="FileExt" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Primary" Type="Boolean" Nullable="false" />
+          <Property Name="ImageType" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PhysHabYear" Type="Int32" Nullable="false" />
           <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-          <Property Name="Primary" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Station" Relationship="RiverWatchModel.FK_StationImage_StationImage" FromRole="StationImage" ToRole="Station" />
+          <NavigationProperty Name="StationImageType" Relationship="RiverWatchModel.FK_StationImage_ImageType" FromRole="StationImage" ToRole="StationImageType" />
         </EntityType>
         <Association Name="FK_StationImage_StationImage">
           <End Type="RiverWatchModel.Station" Role="Station" Multiplicity="1" />
@@ -668,6 +705,27 @@
             </Principal>
             <Dependent Role="StationImage">
               <PropertyRef Name="StationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="StationImageType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EnforcePrimary" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="StationImages" Relationship="RiverWatchModel.FK_StationImage_ImageType" FromRole="StationImageType" ToRole="StationImage" />
+        </EntityType>
+        <Association Name="FK_StationImage_ImageType">
+          <End Type="RiverWatchModel.StationImageType" Role="StationImageType" Multiplicity="1" />
+          <End Type="RiverWatchModel.StationImage" Role="StationImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StationImageType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StationImage">
+              <PropertyRef Name="ImageType" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -974,17 +1032,29 @@
           <EntitySetMapping Name="StationImages">
             <EntityTypeMapping TypeName="RiverWatchModel.StationImage">
               <MappingFragment StoreEntitySet="StationImage">
-                <ScalarProperty Name="Primary" ColumnName="Primary" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="PhysHabYear" ColumnName="PhysHabYear" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ImageType" ColumnName="ImageType" />
+                <ScalarProperty Name="Primary" ColumnName="Primary" />
                 <ScalarProperty Name="FileExt" ColumnName="FileExt" />
                 <ScalarProperty Name="FileSizeInKb" ColumnName="FileSizeInKb" />
                 <ScalarProperty Name="FileSizeInBytes" ColumnName="FileSizeInBytes" />
                 <ScalarProperty Name="FileUrl" ColumnName="FileUrl" />
                 <ScalarProperty Name="FileName" ColumnName="FileName" />
                 <ScalarProperty Name="StationID" ColumnName="StationID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StationImageTypes">
+            <EntityTypeMapping TypeName="RiverWatchModel.StationImageType">
+              <MappingFragment StoreEntitySet="StationImageType">
+                <ScalarProperty Name="EnforcePrimary" ColumnName="EnforcePrimary" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

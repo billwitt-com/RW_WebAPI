@@ -248,6 +248,10 @@
     <Compile Include="Helpers\BlobHelper.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\StationDTO.cs" />
+    <Compile Include="Models\StationImage.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\StationImageHelperModels.cs" />
     <Compile Include="Models\ErrorLog.cs">
       <DependentUpon>Model1.tt</DependentUpon>
@@ -286,15 +290,18 @@
     <Compile Include="Models\Station.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\StationImage.cs">
+    <Compile Include="Models\StationImageType.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Providers\BlobStorageUploadProvider.cs" />
+    <Compile Include="Providers\InMemoryMultipartFormDataStreamProvider.cs" />
     <Compile Include="Services\IBlobService.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
+    <Compile Include="Services\IStationService.cs" />
+    <Compile Include="Services\LogError.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

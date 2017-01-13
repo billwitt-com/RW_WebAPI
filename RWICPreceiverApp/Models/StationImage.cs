@@ -21,12 +21,16 @@ namespace RWICPreceiverApp.Models
         public long FileSizeInBytes { get; set; }
         public long FileSizeInKb { get; set; }
         public string FileExt { get; set; }
+        public bool Primary { get; set; }
+        public int ImageType { get; set; }
+        public string Description { get; set; }
+        public int PhysHabYear { get; set; }
         public string CreatedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public string ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
-        public bool Primary { get; set; }
     
         public virtual Station Station { get; set; }
+        public virtual StationImageType StationImageType { get; set; }
     }
 }

@@ -136,7 +136,6 @@ namespace RWICPreceiverApp.Controllers
             int id = 0;
             bool validated = false;
             string conStr = RWDE.Database.Connection.ConnectionString; 
-
            
             HttpRequestMessage request = ControllerContext.Request; // this seems to be same as request 
           

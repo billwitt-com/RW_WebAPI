@@ -33,5 +33,6 @@ namespace RWICPreceiverApp.Models
         public virtual DbSet<Station> Stations { get; set; }
         public virtual DbSet<NEWexpWater> NEWexpWaters { get; set; }
         public virtual DbSet<StationImage> StationImages { get; set; }
+        public virtual DbSet<StationImageType> StationImageTypes { get; set; }
     }
 }

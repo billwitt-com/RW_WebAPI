@@ -12,74 +12,85 @@ using System.Web;
 namespace RWICPreceiverApp.Providers
 {
 
-    public class BlobStorageUploadProvider : MultipartFileStreamProvider
+    //1.12.17 - Alex Miscall - Need to delete once station image task is complete
+    public class BlobStorageUploadProvider //: MultipartFileStreamProvider
     {
-        public List<StationImageUploadModel> Uploads { get; set; }
+        //public List<StationImageUploadModel> Uploads { get; set; }
+        //private StationImageUploadModel uploadedModel = new StationImageUploadModel();
 
-        public BlobStorageUploadProvider() : base(Path.GetTempPath())
-        {
-            Uploads = new List<StationImageUploadModel>();
-        }
+        //public BlobStorageUploadProvider(StationImageUploadModel model) : base(Path.GetTempPath())
+        //{
+        //    Uploads = new List<StationImageUploadModel>();
+        //    this.uploadedModel = model;
+        //}
 
-        public override Task ExecutePostProcessingAsync()
-        {            
-            // NOTE: FileData is a property of MultipartFileStreamProvider and is a list of multipart
-            // files that have been uploaded and saved to disk in the Path.GetTempPath() location.
-            foreach (var fileData in FileData)
-            {
-                if (!string.IsNullOrEmpty(fileData.Headers.ContentDisposition.FileName))
-                {                   
-                    string mediaType = fileData.Headers.ContentType.MediaType.ToString();
-                    //If the file an image media type
-                    if (System.Text.RegularExpressions.Regex.IsMatch(mediaType, "image/\\S+") )
-                    {
-                        // Sometimes the filename has a leading and trailing double-quote character
-                        // when uploaded, so we trim it; otherwise, we get an illegal character exception
-                        var fileName = Path.GetFileName(fileData.Headers.ContentDisposition.FileName.Trim('"'));
+        //public override Task ExecutePostProcessingAsync()
+        //{            
+        //    // NOTE: FileData is a property of MultipartFileStreamProvider and is a list of multipart
+        //    // files that have been uploaded and saved to disk in the Path.GetTempPath() location.
+        //    foreach (var fileData in FileData)
+        //    {
+        //        if (!string.IsNullOrEmpty(fileData.Headers.ContentDisposition.FileName))
+        //        {                   
+        //            string mediaType = fileData.Headers.ContentType.MediaType.ToString();
 
-                        // Retrieve reference to a blob
-                        var blobContainer = BlobHelper.GetBlobContainer();
-                        var blob = blobContainer.GetBlockBlobReference(fileName);
+        //            //If the file an image media type
+        //            if (System.Text.RegularExpressions.Regex.IsMatch(mediaType, "image/\\S+") )
+        //            {
+        //                // Sometimes the filename has a leading and trailing double-quote character
+        //                // when uploaded, so we trim it; otherwise, we get an illegal character exception
+        //                var fileName = Path.GetFileName(fileData.Headers.ContentDisposition.FileName.Trim('"'));
 
-                        bool blobExists = blob.Exists();
-                        //if is doesn't exist, then add it.
-                        if (!blobExists)
-                        {
-                            // Set the blob content type
-                            blob.Properties.ContentType = fileData.Headers.ContentType.MediaType;                    
+        //                // Retrieve reference to a blob
+        //                var blobContainer = BlobHelper.GetBlobContainer();
+        //                var blob = blobContainer.GetBlockBlobReference(fileName);
 
-                            // Upload file into blob storage, basically copying it from local disk into Azure
-                            using (var fs = File.OpenRead(fileData.LocalFileName))
-                            {
-                                long fileSizeInKB = (long)(fs.Length / 1024);
-                                //If the image is greater than 1 MB don't save it 
-                                if (fileSizeInKB > 1001)
-                                {
-                                    continue;
-                                }
+        //                bool blobExists = blob.Exists();
+
+        //                //if is doesn't exist, then add it.
+        //                if (!blobExists)
+        //                {
+        //                    // Set the blob content type
+        //                    blob.Properties.ContentType = fileData.Headers.ContentType.MediaType;                    
+
+        //                    // Upload file into blob storage, basically copying it from local disk into Azure
+        //                    using (var fs = File.OpenRead(fileData.LocalFileName))
+        //                    {
+        //                        long fileSizeInKB = (long)(fs.Length / 1024);
+        //                        //If the image is greater than 1 MB don't save it 
+        //                        if (fileSizeInKB > 1001)
+        //                        {
+        //                            continue;
+        //                        }
                             
-                                blob.UploadFromStream(fs);
-                            }
+        //                        blob.UploadFromStream(fs);
+        //                    }
 
-                            // Delete local file from disk
-                            File.Delete(fileData.LocalFileName);                            
-                        }
+        //                    // Delete local file from disk
+        //                    File.Delete(fileData.LocalFileName);                            
+        //                }
 
-                        // Create blob upload model with properties from blob info
-                        var blobUpload = new StationImageUploadModel
-                        {
-                            FileName = blob.Name,
-                            FileUrl = blob.Uri.AbsoluteUri,
-                            FileSizeInBytes = blob.Properties.Length
-                        };
+        //                // Create blob upload model with properties from blob info
+        //                var stationImageUploadModel = new StationImageUploadModel
+        //                {
+        //                    FileName = blob.Name,
+        //                    FileUrl = blob.Uri.AbsoluteUri,
+        //                    FileSizeInBytes = blob.Properties.Length,
+        //                    StationID = uploadedModel.StationID,
+        //                    User = uploadedModel.User,
+        //                    Primary = uploadedModel.Primary,
+        //                    ImageTypeID = uploadedModel.ImageTypeID,
+        //                    Description = uploadedModel.Description,
+        //                    PhysHabYear = uploadedModel.PhysHabYear
+        //                };
 
-                        // Add uploaded blob to the list
-                        Uploads.Add(blobUpload);
-                    }
-                }                
-            }
+        //                // Add uploaded blob to the list
+        //                Uploads.Add(stationImageUploadModel);
+        //            }
+        //        }                
+        //    }
 
-            return base.ExecutePostProcessingAsync();
-        }      
+        //    return base.ExecutePostProcessingAsync();
+        //}      
     }
 }

@@ -1,11 +1,14 @@
 ﻿using RWICPreceiverApp.Models;
+using RWICPreceiverApp.Providers;
 using RWICPreceiverApp.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -18,43 +21,48 @@ namespace RWICPreceiverApp.Controllers
     {
         // Interface in place so you can resolve with IoC container of your choice
         private readonly IBlobService _service = new BlobService();
+        private LogError logError = new LogError();
 
         /// <summary>
         /// Uploads one or more blob files.
         /// </summary>
-        /// <param name="stationID">The ID of the station.</param>
-        /// <param name="user">The name of the user uploading the image.</param>
-        /// <param name="primary">Wheather the image is primary or not.</param>
-        /// <returns></returns>
+        /// <returns>List<StationImageUploadModel></returns>
         [ResponseType(typeof(List<StationImageUploadModel>))]
-        [Route("PostStationImage/{stationID:int}/{user}/{primary:bool}")]
-        [HttpPost]
-        public async Task<IHttpActionResult> PostStationImage(int stationID, string user, bool primary)
+        [Route("PostStationImage")]
+        [HttpPost]        
+        public async Task<IHttpActionResult> PostStationImage()
         {
             try
-            {                
-                //add?
-                //bool validated = false;
-                //HttpRequestMessage request = ControllerContext.Request; // this seems to be same as request 
+            {
+                bool validated = false;
+                HttpRequestMessage request = ControllerContext.Request;  
 
-                //ValidateCredentials VC = new ValidateCredentials();
-                //validated = VC.checkCreds(request);
-                //if (!validated)
-                //    return Unauthorized();
-            
+                ValidateCredentials VC = new ValidateCredentials();
+                validated = VC.checkCreds(request);
+                if (!validated)
+                    return Unauthorized();
+
                 // This endpoint only supports multipart form data
                 if (!Request.Content.IsMimeMultipartContent("form-data"))
                 {
                     return StatusCode(HttpStatusCode.UnsupportedMediaType);
                 }
 
-                if(stationID <= 0)
+                //access form data  
+                var provider = await Request.Content.ReadAsMultipartAsync<InMemoryMultipartFormDataStreamProvider>(new InMemoryMultipartFormDataStreamProvider());                
+               
+                var stationImageUploadModel = provider.UploadedStationImageUploadModel;
+                
+                //access files 
+                IList<HttpContent> files = provider.Files;                
+
+                if (stationImageUploadModel.StationID <= 0)
                 {
                     return BadRequest();
                 }
 
                 // Call service to perform upload, then check result to return as content
-                var result = await _service.UploadBlobs(Request.Content, stationID, user, primary);
+                var result = await _service.UploadBlobs(files, stationImageUploadModel);
                 if (result != null && result.Count > 0)
                 {
                     return Ok(result);
@@ -65,6 +73,7 @@ namespace RWICPreceiverApp.Controllers
             }
             catch (Exception ex)
             {
+                HandleErrors(ex, "StationImageController_PostStationImage", "", "");                
                 return InternalServerError(ex);
             }
         }
@@ -110,6 +119,7 @@ namespace RWICPreceiverApp.Controllers
             }
             catch (Exception ex)
             {
+                HandleErrors(ex, "StationImageController_GetStationImage", "", "");
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
@@ -134,14 +144,14 @@ namespace RWICPreceiverApp.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                //add?
-                //bool validated = false;
-                //HttpRequestMessage request = ControllerContext.Request; // this seems to be same as request 
 
-                //ValidateCredentials VC = new ValidateCredentials();
-                //validated = VC.checkCreds(request);
-                //if (!validated)
-                //    return Unauthorized();               
+                bool validated = false;
+                HttpRequestMessage request = ControllerContext.Request; // this seems to be same as request 
+
+                ValidateCredentials VC = new ValidateCredentials();
+                validated = VC.checkCreds(request);
+                if (!validated)
+                    return Unauthorized();
 
                 if (model.ID <= 0)
                 {
@@ -167,6 +177,7 @@ namespace RWICPreceiverApp.Controllers
             }
             catch (Exception ex)
             {
+                HandleErrors(ex, "StationImageController_DeleteStationImage", "", "");
                 return InternalServerError(ex);
             }
         }
@@ -177,9 +188,9 @@ namespace RWICPreceiverApp.Controllers
         /// <param name="model">The UpdatePrimaryStationImageModel for Updating the Primary Status.</param>
         /// <returns>IHttpActionResult</returns>
         [ResponseType(typeof(UpdatePrimaryStationImageModel))]
-        [Route("UpdateStationImagePrimaryStatus")]
+        [Route("UpdateStationImage")]
         [HttpPost]
-        public async Task<IHttpActionResult> UpdateStationImagePrimaryStatus(UpdatePrimaryStationImageModel model)
+        public async Task<IHttpActionResult> UpdateStationImage(UpdatePrimaryStationImageModel model)
         {
             try
             {
@@ -187,14 +198,14 @@ namespace RWICPreceiverApp.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                //add?
-                //bool validated = false;
-                //HttpRequestMessage request = ControllerContext.Request; // this seems to be same as request 
 
-                //ValidateCredentials VC = new ValidateCredentials();
-                //validated = VC.checkCreds(request);
-                //if (!validated)
-                //    return Unauthorized();               
+                bool validated = false;
+                HttpRequestMessage request = ControllerContext.Request; // this seems to be same as request 
+
+                ValidateCredentials VC = new ValidateCredentials();
+                validated = VC.checkCreds(request);
+                if (!validated)
+                    return Unauthorized();
 
                 if (model.ID <= 0)
                 {
@@ -202,7 +213,7 @@ namespace RWICPreceiverApp.Controllers
                 }
 
                 // Call service to perform update, then check result to return as content
-                var updatePrimaryStationImageModel = await _service.UpdatedStationImagePrimaryStatus(model);
+                var updatePrimaryStationImageModel = await _service.UpdatedStationImage(model);
                 if (updatePrimaryStationImageModel != null)
                 {
                     if (updatePrimaryStationImageModel.Updated)
@@ -220,8 +231,58 @@ namespace RWICPreceiverApp.Controllers
             }
             catch (Exception ex)
             {
+                HandleErrors(ex, "StationImageController_UpdateStationImage", "", "");
                 return InternalServerError(ex);
             }
+        }
+
+        /// <summary>
+        /// Returns the Station Information to the main website
+        /// </summary>       
+        /// <returns>IHttpActionResult</returns>     
+        [Route("GetStationData")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetStationData()
+        {
+            try
+            {
+                StationDTO stationDTO = null;
+                //need async service method.
+                return Ok(stationDTO);
+            }
+            catch (Exception ex)
+            {
+                HandleErrors(ex, "StationImageController_UpdateStationImage", "", "");
+                return InternalServerError(ex);
+            }
+        }
+
+        private void HandleErrors(Exception ex, string fromPage, string loggedInUser, string comment)
+        {
+            StringBuilder errorMsg = new StringBuilder();
+            StringBuilder stackTrace = new StringBuilder();
+            errorMsg.AppendFormat("Exception Type: {0}", ex.GetType().ToString()).AppendLine();
+            errorMsg.AppendFormat("Exception: {0} ", ex.Message).AppendLine();
+            errorMsg.AppendFormat("Source: {0} ", ex.Source).AppendLine();
+
+            if (ex.StackTrace != null)
+            {
+                stackTrace.AppendFormat("Stack Trace: {0} ", ex.StackTrace).AppendLine();
+            }
+
+            if (ex.InnerException != null)
+            {
+                errorMsg.AppendFormat("Inner Exception Type: {0} ", ex.InnerException.GetType().ToString()).AppendLine();
+                errorMsg.AppendFormat("Inner Exception: {0} ", ex.InnerException.Message).AppendLine();
+                errorMsg.AppendFormat("Inner Source: {0} ", ex.InnerException.Source).AppendLine();
+
+                if (ex.InnerException.StackTrace != null)
+                {
+                    stackTrace.AppendFormat("Inner Stack Trace: {0} ", ex.InnerException.StackTrace).AppendLine();
+                }
+            }
+            
+            logError.WriteToErrorLog(errorMsg.ToString(), fromPage, stackTrace.ToString(), loggedInUser, comment);
         }
     }
 }

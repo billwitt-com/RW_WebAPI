@@ -12,8 +12,10 @@
         <EntityTypeShape EntityType="RiverWatchModel.Sample" Width="1.5" PointX="9.375" PointY="0.75" />
         <EntityTypeShape EntityType="RiverWatchModel.Station" Width="1.5" PointX="9.375" PointY="9.25" />
         <EntityTypeShape EntityType="RiverWatchModel.NEWexpWater" Width="1.5" PointX="0.75" PointY="10.75" />
-        <EntityTypeShape EntityType="RiverWatchModel.StationImage" Width="1.5" PointX="11.625" PointY="12" />
+        <EntityTypeShape EntityType="RiverWatchModel.StationImage" Width="1.5" PointX="11.625" PointY="11.5" />
         <AssociationConnector Association="RiverWatchModel.FK_StationImage_StationImage" />
+        <EntityTypeShape EntityType="RiverWatchModel.StationImageType" Width="1.5" PointX="9.375" PointY="19.75" />
+        <AssociationConnector Association="RiverWatchModel.FK_StationImage_ImageType" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

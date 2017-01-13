@@ -14,56 +14,150 @@ namespace RWICPreceiverApp.Services
 {
     public interface IBlobService
     {
-        Task<List<StationImageUploadModel>> UploadBlobs(HttpContent httpContent, int stationID, string user, bool primary);
+        Task<List<StationImageUploadModel>> UploadBlobs(IList<HttpContent> files, StationImageUploadModel model);
         Task<StationImageDownloadModel> DownloadBlob(int stationID);
         Task<DeleteStationImageModel> DeleteBlob(DeleteStationImageModel model);
-        Task<UpdatePrimaryStationImageModel> UpdatedStationImagePrimaryStatus(UpdatePrimaryStationImageModel model);
+        Task<UpdatePrimaryStationImageModel> UpdatedStationImage(UpdatePrimaryStationImageModel model);
     }
 
     public class BlobService : IBlobService
     {
-        public async Task<List<StationImageUploadModel>> UploadBlobs(HttpContent httpContent, int stationID, string user, bool primary)
-        {
-            var blobUploadProvider = new BlobStorageUploadProvider();
+        private List<StationImageUploadModel> Uploads { get; set; }
+        public async Task<List<StationImageUploadModel>> UploadBlobs(IList<HttpContent> files, StationImageUploadModel model)
+        {            
+            Uploads = new List<StationImageUploadModel>();
+            Uploads = await UploadBlobsToAzure(files, model);
 
-            var uploadList = await httpContent.ReadAsMultipartAsync(blobUploadProvider)
-                .ContinueWith(task =>
-                {
-                    if (task.IsFaulted || task.IsCanceled)
-                    {
-                        throw task.Exception;
-                    }
+            //Task taskUpload = await UploadBlobsToAzure(files, model)
+            //    .ContinueWith(task =>
+            //    {
+            //        Task<List<StationImageUploadModel>> uploadList = null;
 
-                    var provider = task.Result;
-                    return provider.Uploads.ToList();
-                });
+            //        if (task.IsFaulted || task.IsCanceled)
+            //        {
+            //            throw task.Exception;
+            //        }
 
-            // TODO: Use data in the list to store blob info in your
-            // database so that you can always retrieve it later.
-            if (!SaveImage(uploadList, stationID, user, primary))
+            //        if (task.Status == TaskStatus.RanToCompletion)
+            //        {                       
+            //            var result = task.Result;
+            //            Uploads = result.ToList();
+            //        }
+                        
+            //        return Uploads;
+            //    });
+
+            //taskUpload.Wait();
+           
+            if (!SaveImage(Uploads))
             {
                 return null;
             }
 
-            return uploadList;
+            return Uploads;
+        }
+
+        private async Task<List<StationImageUploadModel>> UploadBlobsToAzure(IList<HttpContent> files, StationImageUploadModel uploadedModel)
+        {
+            // NOTE: FileData is a property of MultipartFileStreamProvider and is a list of multipart
+            // files that have been uploaded and saved to disk in the Path.GetTempPath() location.
+            foreach (var fileData in files)
+            {
+                if (!string.IsNullOrEmpty(fileData.Headers.ContentDisposition.FileName))
+                {
+                    string mediaType = fileData.Headers.ContentType.MediaType.ToString();
+
+                    //If the file an image media type
+                    if (System.Text.RegularExpressions.Regex.IsMatch(mediaType, "image/\\S+"))
+                    {
+                        // Sometimes the filename has a leading and trailing double-quote character
+                        // when uploaded, so we trim it; otherwise, we get an illegal character exception
+                        var fileName = Path.GetFileName(fileData.Headers.ContentDisposition.FileName.Trim('"'));
+                        var path = HttpRuntime.AppDomainAppPath;
+                        string directoryName = Path.Combine(path, "StationImage");
+
+                        if (!Directory.Exists(directoryName))
+                        {
+                            Directory.CreateDirectory(@directoryName);
+                        }
+
+                        string filePath = Path.Combine(directoryName, fileName);
+                        //Deletion exists file  
+                        if (File.Exists(filePath))
+                        {
+                            File.Delete(filePath);
+                        }
+
+                        // Retrieve reference to a blob
+                        var blobContainer = BlobHelper.GetBlobContainer();
+                        var blob = blobContainer.GetBlockBlobReference(fileName);
+
+                        bool blobExists = blob.Exists();
+
+                        //if is doesn't exist, then add it.
+                        if (!blobExists)
+                        {
+                            // Set the blob content type
+                            blob.Properties.ContentType = fileData.Headers.ContentType.MediaType;
+
+                            Stream input = await fileData.ReadAsStreamAsync();
+                            //Directory.CreateDirectory(@directoryName);  
+                            using (Stream file = File.OpenWrite(filePath))
+                            {
+                                input.CopyTo(file);
+                                //close file  
+                                file.Close();
+                            }
+
+                            // Upload file into blob storage, basically copying it from local disk into Azure
+                            using (var fs = File.OpenRead(filePath))
+                            {    
+                                long fileSizeInKB = (long)(fs.Length / 1024);
+                                //If the image is greater than 1 MB don't save it 
+                                if (fileSizeInKB > 1001)
+                                {
+                                    continue;
+                                }
+
+                                blob.UploadFromStream(fs);                                
+                            }
+
+                            // Delete local file from disk
+                            File.Delete(filePath);
+                        }
+
+                        // Create blob upload model with properties from blob info
+                        var stationImageUploadModel = new StationImageUploadModel
+                        {
+                            FileName = blob.Name,
+                            FileUrl = blob.Uri.AbsoluteUri,
+                            FileSizeInBytes = blob.Properties.Length,
+                            StationID = uploadedModel.StationID,
+                            User = uploadedModel.User,
+                            Primary = uploadedModel.Primary,
+                            ImageTypeID = uploadedModel.ImageTypeID,
+                            Description = uploadedModel.Description,
+                            PhysHabYear = uploadedModel.PhysHabYear
+                        };
+
+                        // Add uploaded blob to the list
+                        Uploads.Add(stationImageUploadModel);
+                    }
+                }
+            }
+
+            return Uploads;
         }
 
         public async Task<StationImageDownloadModel> DownloadBlob(int ID)
-        {
-            // TODO: You must implement this helper method. It should retrieve blob info
-            // from your database, based on the blobId. The record should contain the
-            // blobName, which you should return as the result of this helper method.
+        {           
             var imageName = GetImageName(ID);
 
             if (!String.IsNullOrEmpty(imageName))
             {
                 var container = BlobHelper.GetBlobContainer();
                 var blob = container.GetBlockBlobReference(imageName);
-
-                // Download the blob into a memory stream. Notice that we're not putting the memory
-                // stream in a using statement. This is because we need the stream to be open for the
-                // API controller in order for the file to actually be downloadable. The closing and
-                // disposing of the stream is handled by the Web API framework.
+               
                 var ms = new MemoryStream();
                 await blob.DownloadToStreamAsync(ms);
 
@@ -102,42 +196,67 @@ namespace RWICPreceiverApp.Services
             return imageName;
         }
 
-        private bool SaveImage(List<StationImageUploadModel> uploadList, int stationID, string user, bool primary)
+        private bool SaveImage(List<StationImageUploadModel> uploadList)
         {
             bool exists = true;
+            int stationID = uploadList[0].StationID;
 
             using (RiverWatchEntities _db = new RiverWatchEntities())
             {
-                int stationIDFromStationTable = _db.Stations
+                int stationIDFromStationTable = 0;
+                if (uploadList.Count > 0)
+                {
+                    
+                    stationIDFromStationTable = _db.Stations
                                                    .Where(s => s.ID == stationID)
                                                    .Select(s => s.ID)
                                                    .FirstOrDefault();
+                }
+
                 if (stationIDFromStationTable > 0)
                 {
                     StationImage newStationImage = new StationImage();
-                    foreach (var file in uploadList)
+                    bool primary = false;
+                    bool enforcePrimary = false;
+                    foreach (var uploadModel in uploadList)
                     {
-                        string fileExt = Path.GetExtension(file.FileName);
-                        long fileSizeInKb = file.FileSizeInKb;
+                        string fileExt = Path.GetExtension(uploadModel.FileName);
+                        long fileSizeInKb = uploadModel.FileSizeInKb;
+                        primary = uploadModel.Primary;
+
+                        enforcePrimary = _db.StationImageTypes.Find(uploadModel.ImageTypeID).EnforcePrimary;
+
+                        if (!enforcePrimary)
+                        {
+                            primary = false;
+                        }
+                        else
+                        {
+                            primary = uploadModel.Primary;
+                        }
+
                         var stationImage = new StationImage()
                         {
-                            StationID = stationID,
-                            FileName = file.FileName,
-                            FileUrl = file.FileUrl,
+                            StationID = uploadModel.StationID,
+                            FileName = uploadModel.FileName,
+                            FileUrl = uploadModel.FileUrl,
                             FileExt = fileExt,
-                            FileSizeInBytes = file.FileSizeInBytes,
-                            FileSizeInKb = file.FileSizeInKb,
-                            CreatedBy = user,
-                            CreatedDate = DateTime.Now,
-                            Primary = primary
+                            FileSizeInBytes = uploadModel.FileSizeInBytes,
+                            FileSizeInKb = uploadModel.FileSizeInKb,
+                            Primary = primary,
+                            ImageType = uploadModel.ImageTypeID,
+                            Description = uploadModel.Description,
+                            PhysHabYear = uploadModel.PhysHabYear,
+                            CreatedBy = uploadModel.User,
+                            CreatedDate = DateTime.Now
                         };
 
                         _db.StationImages.Add(stationImage);
                         _db.SaveChanges();
-
+                                             
                         newStationImage = stationImage;
                     }
-
+                     
                     //set all other to not primary if the new one is primary
                     if (primary)
                     {
@@ -221,15 +340,18 @@ namespace RWICPreceiverApp.Services
             return deleteStationImageModel;
         }
 
-        public async Task<UpdatePrimaryStationImageModel> UpdatedStationImagePrimaryStatus(UpdatePrimaryStationImageModel model)
+        public async Task<UpdatePrimaryStationImageModel> UpdatedStationImage(UpdatePrimaryStationImageModel model)
         {
             using (RiverWatchEntities _db = new RiverWatchEntities())
             {
                 var updatePrimaryStationImageModel = new UpdatePrimaryStationImageModel();
+                bool enforcePrimary = false;
+                enforcePrimary = _db.StationImageTypes.Find(model.ImageTypeID).EnforcePrimary;
 
                 var stationImages = _db.StationImages
                                         .Where(si => si.StationID == model.StationID)
                                         .ToList<StationImage>();
+
                 if (stationImages.Count() == 0)
                 {
                     updatePrimaryStationImageModel = new UpdatePrimaryStationImageModel()
@@ -237,6 +359,9 @@ namespace RWICPreceiverApp.Services
                         ID = model.ID,
                         StationID = model.StationID,
                         Primary = model.Primary,
+                        ImageTypeID = model.ImageTypeID,
+                        Description = model.Description,
+                        PhysHabYear = model.PhysHabYear,
                         Updated = false,
                         ErrorMessage = "No Station Images were found to update."
                     };
@@ -245,11 +370,24 @@ namespace RWICPreceiverApp.Services
                 {
                     foreach (var stationImage in stationImages)
                     {
+                        //the station image being updated
                         if (stationImage.ID == model.ID)
                         {
-                            stationImage.Primary = model.Primary;
-                        }
-                        else if (model.Primary && (stationImage.ID != model.ID))
+                            if (!enforcePrimary)
+                            {
+                                stationImage.Primary = false;
+                            }
+                            else
+                            {
+                                stationImage.Primary = model.Primary;
+                            }
+                            stationImage.ImageType = model.ImageTypeID;
+                            stationImage.Description = model.Description;
+                            stationImage.ModifiedBy = model.ModifiedBy;
+                            stationImage.ModifiedDate = DateTime.Now;
+                            stationImage.PhysHabYear = model.PhysHabYear;
+                        }                       
+                        else if (model.Primary && enforcePrimary && (stationImage.ID != model.ID))
                         {
                             stationImage.Primary = false;
                         }
@@ -261,6 +399,9 @@ namespace RWICPreceiverApp.Services
                             ID = model.ID,
                             StationID = model.StationID,
                             Primary = model.Primary,
+                            ImageTypeID = model.ImageTypeID,
+                            Description = model.Description,
+                            PhysHabYear = model.PhysHabYear,
                             Updated = true,
                             ErrorMessage = string.Empty
                         };

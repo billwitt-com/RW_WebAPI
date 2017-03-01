@@ -12,6 +12,7 @@ namespace RWICPreceiverApp.Services
        Task<StationDTO> GetStationData();
     }
 
+    /*Waiting to work to determine what information to send to the main website.*/
     public class StationService
     {
         public async Task<StationDTO> GetStationData()
